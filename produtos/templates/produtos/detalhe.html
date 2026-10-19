@@ -1,0 +1,13 @@
+{% extends 'produtos/base.html' %}
+{% block titulo %}{{ produto.nome_comercial }} | Germana's Store{% endblock %}
+{% block conteudo %}
+<a class="voltar" href="{% url 'produtos:listagem' %}">Voltar aos produtos</a>
+<article class="detalhe">
+    <img class="foto" src="{{ produto.url_imagem }}" alt="{{ produto.nome_comercial }}" referrerpolicy="no-referrer">
+    <div>
+        <h1>{{ produto.nome_comercial }}</h1>
+        <h2 class="preco">R$ {{ produto.preco|floatformat:"2g" }}</h2>
+        <p class="descricao">{{ produto.descricao }}</p>
+    </div>
+</article>
+{% endblock %}

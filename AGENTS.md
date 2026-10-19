@@ -15,9 +15,15 @@
 django_germanas_store/
 ├── .venv/               # Ambiente virtual (ignorado pelo git)
 ├── config/              # Módulo de configuração central (settings, urls raiz, wsgi/asgi)
-├── produtos/            # App (futuro): Catálogo de produtos, categorias, preços e estoque
-│   ├── api/             # Recursos da API REST (serializers, viewsets, roteadores)
+├── produtos/            # Catálogo de produtos: consulta Web e API
+│   ├── api/             # Serializers, views de leitura, paginação e URLs da API
+│   ├── migrations/      # Migrações do modelo Produto
+│   ├── static/produtos/ # Estilos e máscara JavaScript de preços
+│   ├── templates/produtos/ # Base, início, listagem e detalhe
+│   ├── tests/           # Testes pytest de modelos, páginas e API
+│   ├── apps.py          # Configuração da app
 │   ├── models.py
+│   ├── servicos.py      # Consulta e filtros compartilhados entre Web e API
 │   ├── views.py         # Views HTML / Web
 │   └── urls.py          # Definições de rotas da aplicação
 ├── pedidos/             # App (futuro): Carrinho de compras e processamento de pedidos
@@ -32,6 +38,36 @@ django_germanas_store/
 ---
 
 ## 3. Arquitetura e Diretrizes de Código
+
+### Catálogo de Produtos
+- `Produto` possui código `id` inteiro positivo gerado automaticamente, nome comercial,
+  descrição, URL de imagem e preço não negativo com duas casas decimais (até 12 dígitos).
+- A página `/` apresenta a navegação; `/produtos/` lista cards e
+  `/produtos/<int:id>/` apresenta o detalhe com preço em reais no padrão pt-BR.
+- A identidade visual usa rosa. A página inicial anuncia a chegada da loja,
+  preservando a navegação com marca e aba Produtos.
+- Os cards mostram nome em uma linha com reticências e preço brasileiro abaixo,
+  em rosa mais claro para diferenciá-lo do nome.
+  Na listagem, busca, preço mínimo, preço máximo, Filtrar e limpar ocupam
+  proporções 9:4:4:2:1 em telas largas, com
+  adaptação para celular. Os botões Filtrar e limpar ficam na mesma linha dos
+  campos em telas largas; a limpeza usa botão vermelho com ícone de lixeira.
+- Os preços na Web usam máscara de centavos da direita para a esquerda
+  (digitar `123456` exibe `1.234,56`), sem controles de incremento.
+  A Web aceita valores brasileiros e links anteriores com ponto decimal;
+  a API mantém o formato decimal com ponto.
+- A API é somente leitura: `GET /api/v1/produtos/` e
+  `GET /api/v1/produtos/<int:codigo>/`. `codigo` corresponde ao `id` do produto.
+- Filtros por query string: `busca` procura trecho no nome OU na descrição
+  (`icontains`); `preco_minimo` e `preco_maximo` são inclusivos e aceitam valores
+  decimais com ponto. A API também permite filtrar por `codigo` exato.
+- Filtros combinados são aplicados conjuntamente; campos vazios são ignorados.
+  Valores inválidos, negativos ou faixa invertida retornam HTTP 400 com mensagens.
+  Produto inexistente retorna HTTP 404.
+- A API retorna `count`, `next`, `previous` e `results`, com 12 produtos por página,
+  ordenados por `id`. Use `page` para navegar.
+- Execute `.venv/bin/pytest` para os testes em `produtos/tests/`, com
+  `DJANGO_SETTINGS_MODULE=config.settings` e Faker na localidade `pt_BR`.
 
 ### Idioma e Nomenclatura do Código (pt-BR)
 - **Convenção de Idioma:** Nomes de apps, modelos, tabelas, funções, métodos, variáveis, endpoints de API, arquivos e pastas devem ser escritos em **Português do Brasil (pt-BR)** (ex: `produtos`, `pedidos`, `calcular_total_pedido`).

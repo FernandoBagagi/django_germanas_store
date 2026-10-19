@@ -1,0 +1,20 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block titulo %}Germana's Store{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'produtos/estilos.css' %}">
+</head>
+<body>
+    <header>
+        <nav aria-label="Navegação principal" class="container">
+            <a class="marca" href="{% url 'produtos:inicio' %}">Germana's Store</a>
+            <a href="{% url 'produtos:listagem' %}">Produtos</a>
+        </nav>
+    </header>
+    <main class="container">{% block conteudo %}{% endblock %}</main>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

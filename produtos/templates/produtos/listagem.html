@@ -1,0 +1,42 @@
+{% extends 'produtos/base.html' %}
+{% load static %}
+{% block titulo %}Produtos | Germana's Store{% endblock %}
+{% block conteudo %}
+<form method="get" class="filtros" action="{% url 'produtos:listagem' %}">
+    <div class="campos_filtro">
+    <div><label for="busca">Buscar produtos</label>
+    <input type="search" id="busca" name="busca" value="{{ filtros.busca }}" placeholder="Nome ou descrição"></div>
+    <div><label for="preco_minimo">Preço mínimo (R$)</label>
+    <input type="text" inputmode="numeric" class="moeda" id="preco_minimo" name="preco_minimo" placeholder="0,00" autocomplete="off" value="{{ filtros.preco_minimo }}"></div>
+    <div><label for="preco_maximo">Preço máximo (R$)</label>
+    <input type="text" inputmode="numeric" class="moeda" id="preco_maximo" name="preco_maximo" placeholder="0,00" autocomplete="off" value="{{ filtros.preco_maximo }}"></div>
+    </div>
+    <div class="acoes_filtro">
+        <button type="submit">Filtrar</button>
+        <a class="botao limpar_filtros" href="{% url 'produtos:listagem' %}" aria-label="Limpar filtros" title="Limpar filtros">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                <path d="M3 6h18M9 6V4h6v2M5 6l1 14h12l1-14M10 10v6M14 10v6"/>
+            </svg>
+        </a>
+    </div>
+</form>
+{% if erros %}
+<div class="erros" role="alert">
+    <p>Confira os filtros informados:</p>
+    <ul>{% for campo, mensagens in erros.items %}{% for mensagem in mensagens %}<li>{{ mensagem }}</li>{% endfor %}{% endfor %}</ul>
+</div>
+{% else %}
+<div class="grade">
+    {% for produto in produtos %}
+    <article class="card">
+        <a href="{% url 'produtos:detalhe' produto.id %}">
+            <img src="{{ produto.url_imagem }}" alt="{{ produto.nome_comercial }}" loading="lazy" referrerpolicy="no-referrer">
+            <h2 title="{{ produto.nome_comercial }}">{{ produto.nome_comercial }}</h2>
+            <p class="preco_card">R$ {{ produto.preco|floatformat:"2g" }}</p>
+        </a>
+    </article>
+    {% empty %}<p>Nenhum produto encontrado.</p>{% endfor %}
+</div>
+{% endif %}
+{% endblock %}
+{% block scripts %}<script src="{% static 'produtos/mascara_precos.js' %}" defer></script>{% endblock %}
