@@ -27,10 +27,10 @@ django_germanas_store/
 │   ├── views.py         # Views HTML / Web
 │   └── urls.py          # Definições de rotas da aplicação
 ├── pedidos/             # App (futuro): Carrinho de compras e processamento de pedidos
-├── .gitignore           # Modificar somente se o usuário permitir!
-├── AGENTS.md            # Diretrizes para Agentes de IA. Modificar sempre houver alguma mudança na estrutura de pastas e da regra de negócio 
+├── .gitignore           # Modificar somente se o usuário permitir! Nunca leia os arquivos que estão no gitignore.
+├── AGENTS.md            # Diretrizes para Agentes de IA. Modifique sempre que houver mudança na estrutura de pastas ou da regra de negócio.
 ├── db.sqlite3           
-├── manage.py            # Inicializador do projeto
+├── manage.py            
 ├── pyproject.toml       # Definição das regras técnicas para as ferramentas CLI
 └── requirements.txt     # Dependências fixadas do projeto
 ```

@@ -1,3 +1,5 @@
+from typing import Any, override
+
 from rest_framework import serializers
 
 from produtos.models import Produto
@@ -20,11 +22,12 @@ class FiltrosProdutoSerializer(serializers.Serializer):
     )
     codigo = serializers.IntegerField(min_value=1, required=False)
 
-    def validate(self, dados: dict) -> dict:
-        minimo = dados.get('preco_minimo')
-        maximo = dados.get('preco_maximo')
+    @override
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
+        minimo = attrs.get('preco_minimo')
+        maximo = attrs.get('preco_maximo')
         if minimo is not None and maximo is not None and minimo > maximo:
             raise serializers.ValidationError(
                 'O preço mínimo não pode ser maior que o preço máximo.'
             )
-        return dados
+        return attrs

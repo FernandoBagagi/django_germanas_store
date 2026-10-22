@@ -1,5 +1,6 @@
 import re
 from collections.abc import Mapping
+from typing import Any, cast
 
 from django.db.models import Q, QuerySet
 from django.shortcuts import get_object_or_404
@@ -14,7 +15,7 @@ class ServicoProdutos:
         filtros = dict(parametros.items())
         for campo in ('preco_minimo', 'preco_maximo'):
             valor = filtros.get(campo, '').strip()
-            if re.fullmatch(r'(?:[0-9]+|[0-9]{1,3}(?:\.[0-9]{3})+),[0-9]{2}', valor):
+            if re.fullmatch(r'(?:\d+|\d{1,3}(?:\.\d{3})+),\d{2}', valor):
                 filtros[campo] = valor.replace('.', '').replace(',', '.')
         return ServicoProdutos.listar(filtros)
 
@@ -24,7 +25,7 @@ class ServicoProdutos:
             data={chave: valor for chave, valor in parametros.items() if valor != ''}
         )
         filtros.is_valid(raise_exception=True)
-        dados = filtros.validated_data
+        dados = cast(dict[str, Any], filtros.validated_data)
         produtos = Produto.objects.all()
         if busca := dados.get('busca'):
             produtos = produtos.filter(

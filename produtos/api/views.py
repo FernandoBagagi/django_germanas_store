@@ -1,3 +1,5 @@
+from typing import override
+
 from django.db.models import QuerySet
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.pagination import PageNumberPagination
@@ -15,14 +17,17 @@ class ListagemProdutos(ListAPIView):
     serializer_class = ProdutoSerializer
     pagination_class = PaginacaoProdutos
 
-    def get_queryset(self) -> QuerySet[Produto]:
-        return ServicoProdutos.listar(self.request.query_params)
+    @override
+    def get_queryset(self) -> QuerySet[Produto]: # type: ignore[override]
+        query_params = getattr(self.request, 'query_params', {})
+        return ServicoProdutos.listar(query_params)
 
 
 class DetalheProduto(RetrieveAPIView):
     serializer_class = ProdutoSerializer
 
-    def get_object(self) -> Produto:
+    @override
+    def get_object(self) -> Produto: # type: ignore[override]
         produto = ServicoProdutos.obter(self.kwargs['codigo'])
         self.check_object_permissions(self.request, produto)
         return produto

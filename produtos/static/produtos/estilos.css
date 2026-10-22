@@ -1,42 +1,270 @@
-* { box-sizing: border-box; }
-body { margin: 0; background: #fff8fb; color: #32212b; font-family: system-ui, sans-serif; line-height: 1.6; }
-a { color: #b52268; text-underline-offset: .2em; }
-.container { width: min(1120px, 92%); margin: auto; }
-header { background: #fff; border-bottom: 1px solid #f0d6e2; }
-nav { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding: 1.2rem 0; }
-.marca { font-weight: 750; font-size: 1.3rem; text-decoration: none; }
-main { padding: 2rem 0 4rem; }
-h1 { line-height: 1.2; font-size: clamp(2rem, 4vw, 3rem); }
-.apresentacao { padding: clamp(3rem, 8vw, 7rem) 1.5rem; text-align: center; border-radius: 1.5rem; background: radial-gradient(ellipse at top, #fbd3e5, #fff0f6 65%); }
-.apresentacao h1 { max-width: 850px; margin: 1.5rem auto; font-size: clamp(2.4rem, 6vw, 4.5rem); color: #9d1855; }
-.aviso { max-width: 590px; margin: 0 auto 2rem; font-size: 1.2rem; }
-.em_breve { display: inline-block; padding: .5rem 1.3rem; border: 1px solid #b52268; border-radius: 2rem; color: #9d1855; font-weight: 700; }
-.etiqueta { text-transform: uppercase; letter-spacing: .15em; }
-.botao, button { display: inline-flex; align-items: center; justify-content: center; min-height: 50px; background: #b52268; color: white; padding: .75rem 1.2rem; border: 0; border-radius: .35rem; font: inherit; text-decoration: none; cursor: pointer; }
-.filtros { display: grid; grid-template-columns: minmax(0, 9fr) repeat(2, minmax(0, 4fr)) minmax(0, 2fr) minmax(0, 1fr); align-items: end; gap: 1rem; padding: 1.5rem; background: #fce7f0; border-radius: .5rem; margin-bottom: 2rem; }
-.campos_filtro { display: contents; }
-.campos_filtro > div { min-width: 0; }
-.acoes_filtro { display: contents; }
-.acoes_filtro > * { width: 100%; min-width: 0; height: 53px; padding-inline: .25rem; }
-.limpar_filtros { background: #c62828; }
-.limpar_filtros:hover { background: #a51f1f; }
-button:hover { background: #981b57; }
-label { display: block; font-weight: 600; margin-bottom: .4rem; }
-input { width: 100%; padding: .8rem; border: 1px solid #b9829c; border-radius: .3rem; font: inherit; }
-:focus-visible { outline: 3px solid #b52268; outline-offset: 3px; }
-.grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; }
-.card { overflow: hidden; background: white; border: 1px solid #f0d6e2; border-radius: .5rem; }
-.card a { text-decoration: none; }
-.card img { width: 100%; aspect-ratio: 1; object-fit: contain; background: #fff0f6; }
-.card h2 { margin: .75rem 1rem .25rem; font-size: 1.15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.preco_card { margin: 0 1rem 1rem; text-align: left; color: #b84e7a; font-weight: 700; }
-.voltar { display: inline-block; margin-bottom: 2rem; }
-.detalhe { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
-.foto { width: 100%; max-height: 600px; object-fit: contain; border-radius: .5rem; background: #fff; }
-.detalhe h1 { margin-top: 0; overflow-wrap: anywhere; }
-.preco { color: #b52268; font-size: 1.7rem; }
-.descricao { white-space: pre-wrap; overflow-wrap: anywhere; }
-.erros { border-left: 4px solid #a32929; padding: 1rem; background: #fff0ec; }
-@media (max-width: 640px) { .detalhe { grid-template-columns: 1fr; gap: 1.5rem; } }
+* {
+    box-sizing: border-box;
+}
 
-@media (max-width: 640px) { .filtros { grid-template-columns: 1fr; } .campos_filtro { display: grid; align-items: end; gap: 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); } .acoes_filtro { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; } .campos_filtro > div:first-child { grid-column: 1 / -1; } }
+body {
+    margin: 0;
+    background: #fff8fb;
+    color: #32212b;
+    font-family: system-ui, sans-serif;
+    line-height: 1.6;
+}
+
+a {
+    color: #b52268;
+    text-underline-offset: .2em;
+}
+
+.container {
+    width: min(1120px, 92%);
+    margin: auto;
+}
+
+header {
+    background: #fff;
+    border-bottom: 1px solid #f0d6e2;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 1.2rem 0;
+}
+
+.marca {
+    font-weight: 750;
+    font-size: 1.3rem;
+    text-decoration: none;
+}
+
+main {
+    padding: 2rem 0 4rem;
+}
+
+h1 {
+    line-height: 1.2;
+    font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.apresentacao {
+    padding: clamp(3rem, 8vw, 7rem) 1.5rem;
+    text-align: center;
+    border-radius: 1.5rem;
+    background: radial-gradient(ellipse at top, #fbd3e5, #fff0f6 65%);
+}
+
+.apresentacao h1 {
+    max-width: 850px;
+    margin: 1.5rem auto;
+    font-size: clamp(2.4rem, 6vw, 4.5rem);
+    color: #9d1855;
+}
+
+.aviso {
+    max-width: 590px;
+    margin: 0 auto 2rem;
+    font-size: 1.2rem;
+}
+
+.em_breve {
+    display: inline-block;
+    padding: .5rem 1.3rem;
+    border: 1px solid #b52268;
+    border-radius: 2rem;
+    color: #9d1855;
+    font-weight: 700;
+}
+
+.etiqueta {
+    text-transform: uppercase;
+    letter-spacing: .15em;
+}
+
+.botao,
+button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 50px;
+    background: #b52268;
+    color: white;
+    padding: .75rem 1.2rem;
+    border: 0;
+    border-radius: .35rem;
+    font: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.filtros {
+    display: grid;
+    grid-template-columns: minmax(0, 9fr) repeat(2, minmax(0, 4fr)) minmax(0, 2fr) minmax(0, 1fr);
+    align-items: end;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: #fce7f0;
+    border-radius: .5rem;
+    margin-bottom: 2rem;
+}
+
+.campos_filtro {
+    display: contents;
+}
+
+.campos_filtro>div {
+    min-width: 0;
+}
+
+.acoes_filtro {
+    display: contents;
+}
+
+.acoes_filtro>* {
+    width: 100%;
+    min-width: 0;
+    height: 53px;
+    padding-inline: .25rem;
+}
+
+.limpar_filtros {
+    background: #c62828;
+}
+
+.limpar_filtros:hover {
+    background: #a51f1f;
+}
+
+button:hover {
+    background: #981b57;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: .4rem;
+}
+
+input {
+    width: 100%;
+    padding: .8rem;
+    border: 1px solid #b9829c;
+    border-radius: .3rem;
+    font: inherit;
+}
+
+:focus-visible {
+    outline: 3px solid #b52268;
+    outline-offset: 3px;
+}
+
+.grade {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+.card {
+    overflow: hidden;
+    background: white;
+    border: 1px solid #f0d6e2;
+    border-radius: .5rem;
+}
+
+.card a {
+    text-decoration: none;
+}
+
+.card img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: contain;
+    background: #fff0f6;
+}
+
+.card h2 {
+    margin: .75rem 1rem .25rem;
+    font-size: 1.15rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.preco_card {
+    margin: 0 1rem 1rem;
+    text-align: left;
+    color: #b84e7a;
+    font-weight: 700;
+}
+
+.voltar {
+    display: inline-block;
+    margin-bottom: 2rem;
+}
+
+.detalhe {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+.foto {
+    width: 100%;
+    max-height: 600px;
+    object-fit: contain;
+    border-radius: .5rem;
+    background: #fff;
+}
+
+.detalhe h1 {
+    margin-top: 0;
+    overflow-wrap: anywhere;
+}
+
+.preco {
+    color: #b52268;
+    font-size: 1.7rem;
+}
+
+.descricao {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.erros {
+    border-left: 4px solid #a32929;
+    padding: 1rem;
+    background: #fff0ec;
+}
+
+@media (max-width: 640px) {
+    .detalhe {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 640px) {
+    .filtros {
+        grid-template-columns: 1fr;
+    }
+
+    .campos_filtro {
+        display: grid;
+        align-items: end;
+        gap: 1rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .acoes_filtro {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1rem;
+    }
+
+    .campos_filtro>div:first-child {
+        grid-column: 1 / -1;
+    }
+}

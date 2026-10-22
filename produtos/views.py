@@ -1,3 +1,5 @@
+from typing import Any, cast
+
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from rest_framework.exceptions import ValidationError
@@ -10,7 +12,7 @@ def inicio(requisicao: HttpRequest) -> HttpResponse:
 
 
 def listagem(requisicao: HttpRequest) -> HttpResponse:
-    contexto = {'filtros': requisicao.GET}
+    contexto = cast(dict[str, Any], {'filtros': requisicao.GET})
     try:
         contexto['produtos'] = ServicoProdutos.listar_web(requisicao.GET)
     except ValidationError as erro:
