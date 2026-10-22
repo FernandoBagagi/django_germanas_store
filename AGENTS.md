@@ -116,7 +116,8 @@ Ao executar comandos de terminal, **sempre utilize o Python e Pip do ambiente vi
 - Rodar servidor: `.venv/bin/python manage.py runserver`
 - Criar/Aplicar migrações: `.venv/bin/python manage.py makemigrations` e `.venv/bin/python manage.py migrate`
 - Executar testes: `.venv/bin/pytest`
-- Executar linter: `.venv/bin/ruff check` e `.venv/bin/ruff format`
+- Executar linter: `.venv/bin/ruff check`, `.venv/bin/ruff format` e `.venv/bin/pyright`
+- Executar linter (substitua {APP_NAME} pelo nome do app, exemplo produtos): `.venv/bin/mypy {APP_NAME}/`
 
 ---
 

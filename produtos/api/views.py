@@ -18,7 +18,7 @@ class ListagemProdutos(ListAPIView):
     pagination_class = PaginacaoProdutos
 
     @override
-    def get_queryset(self) -> QuerySet[Produto]: # type: ignore[override]
+    def get_queryset(self) -> QuerySet[Produto]:  # type: ignore[override]
         query_params = getattr(self.request, 'query_params', {})
         return ServicoProdutos.listar(query_params)
 
@@ -27,7 +27,7 @@ class DetalheProduto(RetrieveAPIView):
     serializer_class = ProdutoSerializer
 
     @override
-    def get_object(self) -> Produto: # type: ignore[override]
+    def get_object(self) -> Produto:  # type: ignore[override]
         produto = ServicoProdutos.obter(self.kwargs['codigo'])
         self.check_object_permissions(self.request, produto)
         return produto

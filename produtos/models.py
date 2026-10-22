@@ -1,15 +1,24 @@
 from decimal import Decimal
 
 from django.core.validators import MinValueValidator
-from django.db import models
+from django.db.models import (
+    BigAutoField,
+    CharField,
+    CheckConstraint,
+    DecimalField,
+    Model,
+    Q,
+    TextField,
+    URLField,
+)
 
 
-class Produto(models.Model):
-    id = models.BigAutoField('código', primary_key=True)
-    nome_comercial = models.CharField('nome comercial', max_length=255)
-    descricao = models.TextField('descrição')
-    url_imagem = models.URLField('URL da imagem', max_length=2048)
-    preco = models.DecimalField(
+class Produto(Model):
+    id: BigAutoField = BigAutoField('código', primary_key=True)
+    nome_comercial: CharField = CharField('nome comercial', max_length=255)
+    descricao: TextField = TextField('descrição')
+    url_imagem: URLField = URLField('URL da imagem', max_length=2048)
+    preco: DecimalField = DecimalField(
         'preço',
         max_digits=12,
         decimal_places=2,
@@ -21,11 +30,9 @@ class Produto(models.Model):
         verbose_name_plural = 'produtos'
         ordering = ['id']
         constraints = [
-            models.CheckConstraint(
-                condition=models.Q(id__gt=0), name='produto_id_positivo'
-            ),
-            models.CheckConstraint(
-                condition=models.Q(preco__gte=0), name='produto_preco_nao_negativo'
+            CheckConstraint(condition=Q(id__gt=0), name='produto_id_positivo'),
+            CheckConstraint(
+                condition=Q(preco__gte=0), name='produto_preco_nao_negativo'
             ),
         ]
 

@@ -35,3 +35,13 @@ docstring-code-format = true
 pythonpath = "."
 testpaths = ["produtos/tests"]
 DJANGO_SETTINGS_MODULE = "config.settings"
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+
+[tool.mypy]
+python_version = "3.14"
+
+[tool.django-stubs]
+django_settings_module = "config.settings"

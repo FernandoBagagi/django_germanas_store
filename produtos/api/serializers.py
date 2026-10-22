@@ -6,7 +6,7 @@ from produtos.models import Produto
 
 
 class ProdutoSerializer(serializers.ModelSerializer):
-    class Meta:
+    class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         model = Produto
         fields = ['id', 'nome_comercial', 'descricao', 'url_imagem', 'preco']
         read_only_fields = fields
