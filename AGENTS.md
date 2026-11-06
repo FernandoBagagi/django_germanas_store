@@ -14,7 +14,25 @@
 ```text
 django_germanas_store/
 ├── .venv/               # Ambiente virtual (ignorado pelo git)
+├── backups/             # Backups SQLite locais; leitura exige autorização
 ├── config/              # Módulo de configuração central (settings, urls raiz, wsgi/asgi)
+├── conftest.py          # Fixtures compartilhadas de usuários e configuração de testes
+├── docs/               # Plano aprovado (imutável sem autorização) e operação
+├── usuarios/           # Cadastro, autenticação, papéis e ciclo de vida das contas
+│   ├── api/            # JWT, serializers, permissões, views e URLs
+│   ├── migrations/     # Adoção conservadora de auth_user
+│   ├── templates/usuarios/ # Cadastro, conta, administração e recuperação
+│   ├── tests/          # Modelos, serviços, API, Web, migração e concorrência
+│   ├── admin.py        # Administração sem exclusão física nem exposição de hashes
+│   ├── formularios.py  # Formulários e envio de recuperação
+│   ├── middleware.py   # Versão de sessão e regularização do legado
+│   ├── migracoes.py    # Operação de adoção das tabelas existentes
+│   ├── models.py       # Usuario(AbstractUser) e vínculos nativos
+│   ├── servicos.py     # Regras compartilhadas e transações
+│   ├── tokens.py       # Recuperação vinculada à versão de autenticação
+│   ├── validadores.py  # CPF, telefone e maioridade
+│   ├── views.py
+│   └── urls.py
 ├── produtos/            # Catálogo de produtos: consulta Web e API
 │   ├── api/             # Serializers, views de leitura, paginação e URLs da API
 │   ├── migrations/      # Migrações do modelo Produto
@@ -56,8 +74,10 @@ django_germanas_store/
   (digitar `123456` exibe `1.234,56`), sem controles de incremento.
   A Web aceita valores brasileiros e links anteriores com ponto decimal;
   a API mantém o formato decimal com ponto.
-- A API é somente leitura: `GET /api/v1/produtos/` e
-  `GET /api/v1/produtos/<int:codigo>/`. `codigo` corresponde ao `id` do produto.
+- A API exige JWT: `GET /api/v1/produtos/` e
+  `GET /api/v1/produtos/<int:codigo>/` aceitam todas as roles com cadastro completo.
+  `codigo` corresponde ao `id`. ADMIN e VENDEDOR também podem usar POST na coleção
+  e PUT/PATCH/DELETE no detalhe. As páginas HTML continuam públicas.
 - Filtros por query string: `busca` procura trecho no nome OU na descrição
   (`icontains`); `preco_minimo` e `preco_maximo` são inclusivos e aceitam valores
   decimais com ponto. A API também permite filtrar por `codigo` exato.
@@ -69,8 +89,39 @@ django_germanas_store/
 - Execute `.venv/bin/pytest` para os testes em `produtos/tests/`, com
   `DJANGO_SETTINGS_MODULE=config.settings` e Faker na localidade `pt_BR`.
 
+### Usuários
+- Fonte dos requisitos: `docs/PLAN_USUARIOS.md`. Nunca modificar esse plano sem
+  autorização explícita. Divergências devem ser apresentadas ao usuário.
+- `Usuario(AbstractUser)` preserva nomes e interfaces nativos em inglês;
+  extensões próprias usam pt-BR. `AUTH_USER_MODEL=usuarios.Usuario`.
+- Cadastro exige username, email, password, first_name, last_name, nascimento,
+  CPF e telefone. CPF válido e imutável; email exclusivo sem distinguir caixa;
+  telefone brasileiro normalizado com DDD; nascimento ISO e idade mínima de 18.
+- ADMIN implica is_superuser e is_staff; VENDEDOR e CLIENTE usam grupos Django.
+  Somente ADMIN administra outros usuários e altera papéis. Último ADMIN ativo
+  não pode ser desativado ou rebaixado, inclusive sob concorrência.
+- Cadastro público sempre cria CLIENTE. Mesmo CPF inativo reativa o registro,
+  mantém id, substitui cadastro/senha e remove privilégios. Esta regra foi
+  expressamente aprovada sem comprovação de titularidade.
+- Exclusão de usuário é desativação, reservando identificadores. Serviços
+  centralizam as operações; não usar QuerySet.update/delete para contorná-los.
+- API usa Bearer JWT com consulta ao usuário, access de 30 minutos, refresh de
+  24 horas, rotação e blacklist. Versão de autenticação invalida sessões e
+  tokens em troca de senha, papel, ativação ou desativação. Nunca expor hashes.
+- Recuperação envia link Django válido por uma hora; não envia senha.
+  Logout Web é POST com CSRF e encerra apenas a sessão atual. GET não efetiva
+  alterações de negócio. Falhas de autenticação: 401; permissão: 403.
+- Legado incompleto autentica para regularizar a própria conta, mas não acessa
+  operações protegidas de produtos, outros usuários ou Django Admin.
+- Migração real exige backup e autorização para acesso ao banco ignorado.
+  Consultar `docs/OPERACAO_USUARIOS.md`; não apagar o banco nem usar --fake.
+- Testes isolados: `GERMANAS_BANCO=:memory: .venv/bin/pytest`.
+  A suíte inclui bancos sintéticos temporários para migração e concorrência.
+
 ### Idioma e Nomenclatura do Código (pt-BR)
 - **Convenção de Idioma:** Nomes de apps, modelos, tabelas, funções, métodos, variáveis, endpoints de API, arquivos e pastas devem ser escritos em **Português do Brasil (pt-BR)** (ex: `produtos`, `pedidos`, `calcular_total_pedido`).
+- **Exceção de compatibilidade:** preservar nomes nativos de Django/DRF/Simple JWT
+  e tabelas legadas `auth_user`, `auth_user_groups`, `auth_user_user_permissions`.
 - **Formatação de Nomes:**
   - Use **snake_case** para nomes de apps, variáveis, funções, métodos, rotas e arquivos.
   - Use **PascalCase** para nomes de modelos, views baseadas em classes (CBVs), serializers e formulários.

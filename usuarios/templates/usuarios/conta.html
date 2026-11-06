@@ -1,0 +1,16 @@
+{% extends 'produtos/base.html' %}
+{% block conteudo %}
+<h1>Minha conta</h1>
+{% if conta.cadastro_pendente %}<p role="alert">Complete seu cadastro para continuar.</p>{% endif %}
+<dl>
+    <dt>Login</dt><dd>{{ conta.username }}</dd>
+    <dt>Nome</dt><dd>{{ conta.first_name }} {{ conta.last_name }}</dd>
+    <dt>Email</dt><dd>{{ conta.email }}</dd>
+    <dt>Nascimento</dt><dd>{{ conta.data_nascimento|date:'Y-m-d' }}</dd>
+    <dt>CPF</dt><dd>{{ conta.cpf|default_if_none:'' }}</dd>
+    <dt>Telefone</dt><dd>{{ conta.telefone }}</dd>
+    <dt>Papel</dt><dd>{{ conta.papel }}</dd>
+</dl>
+<a href="{% url 'usuarios:editar_conta' %}">Editar cadastro</a>
+<a href="{% url 'usuarios:desativar_conta' %}">Desativar conta</a>
+{% endblock %}

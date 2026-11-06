@@ -1,0 +1,6 @@
+{% extends 'produtos/base.html' %}
+{% block conteudo %}
+<h1>Desativar conta</h1>
+<p>Desativar a conta de {{ conta.username }}? Os dados serão preservados.</p>
+<form method="post">{% csrf_token %}<button type="submit">Confirmar desativação</button></form>
+{% endblock %}

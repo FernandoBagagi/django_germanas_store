@@ -120,11 +120,11 @@ def test_filtros_invalidos(cliente_api: APIClient, filtros: dict) -> None:
 
 @pytest.mark.parametrize('metodo', ['post', 'put', 'patch', 'delete'])
 @pytest.mark.parametrize('detalhe', [True, False])
-def test_somente_leitura(
+def test_cliente_nao_pode_escrever(
     cliente_api: APIClient, produto: Produto, metodo: str, detalhe: bool
 ) -> None:
     url = f'/api/v1/produtos/{produto.pk}/' if detalhe else '/api/v1/produtos/'
-    assert getattr(cliente_api, metodo)(url, {}, format='json').status_code == 405
+    assert getattr(cliente_api, metodo)(url, {}, format='json').status_code == 403
     assert Produto.objects.filter(pk=produto.pk).exists()
 
 

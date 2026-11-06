@@ -1,0 +1,4 @@
+Você solicitou a redefinição de senha na Germana's Store.
+Abra o link para escolher uma nova senha:
+{{ protocol }}://{{ domain }}{% url 'usuarios:confirmar_senha' uidb64=uid token=token %}
+O link é válido por uma hora. Se não solicitou a alteração, ignore este email.

@@ -12,6 +12,14 @@
         <nav aria-label="Navegação principal" class="container">
             <a class="marca" href="{% url 'produtos:inicio' %}">Germana's Store</a>
             <a href="{% url 'produtos:listagem' %}">Produtos</a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'usuarios:minha_conta' %}">Minha conta</a>
+            {% if user.is_superuser %}<a href="{% url 'usuarios:listagem' %}">Usuários</a>{% endif %}
+            <form method="post" action="{% url 'usuarios:sair' %}">{% csrf_token %}<button type="submit">Sair</button></form>
+            {% else %}
+            <a href="{% url 'usuarios:entrar' %}">Entrar</a>
+            <a href="{% url 'usuarios:cadastrar' %}">Cadastrar</a>
+            {% endif %}
         </nav>
     </header>
     <main class="container">{% block conteudo %}{% endblock %}</main>

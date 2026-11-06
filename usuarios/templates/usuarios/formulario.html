@@ -1,0 +1,12 @@
+{% extends 'produtos/base.html' %}
+{% block titulo %}{{ titulo }} | Germana's Store{% endblock %}
+{% block conteudo %}
+<h1>{{ titulo }}</h1>
+{% if form %}
+<form method="post" class="formulario-usuario">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Salvar</button>
+</form>
+{% else %}<p>Link inválido ou expirado. Solicite uma nova recuperação.</p>{% endif %}
+{% endblock %}

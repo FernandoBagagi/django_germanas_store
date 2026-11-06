@@ -6,6 +6,7 @@ from faker import Faker
 from rest_framework.test import APIClient
 
 from produtos.models import Produto
+from usuarios.api.autenticacao import emitir_tokens
 
 
 @pytest.fixture
@@ -48,5 +49,7 @@ def catalogo(criar_produto: Callable[..., Produto], gerador: Faker) -> list[Prod
 
 
 @pytest.fixture
-def cliente_api() -> APIClient:
-    return APIClient()
+def cliente_api(usuario) -> APIClient:
+    cliente = APIClient()
+    cliente.credentials(HTTP_AUTHORIZATION=f'Bearer {emitir_tokens(usuario)["access"]}')
+    return cliente

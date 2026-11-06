@@ -1,19 +1,22 @@
 from typing import override
 
 from django.db.models import QuerySet
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 
 from produtos.api.serializers import ProdutoSerializer
 from produtos.models import Produto
 from produtos.servicos import ServicoProdutos
+from usuarios.api.permissoes import PermissaoProdutos
 
 
 class PaginacaoProdutos(PageNumberPagination):
     page_size = 12
 
 
-class ListagemProdutos(ListAPIView):
+class ListagemProdutos(ListCreateAPIView):
+    permission_classes = [IsAuthenticated, PermissaoProdutos]
     serializer_class = ProdutoSerializer
     pagination_class = PaginacaoProdutos
 
@@ -23,7 +26,8 @@ class ListagemProdutos(ListAPIView):
         return ServicoProdutos.listar(query_params)
 
 
-class DetalheProduto(RetrieveAPIView):
+class DetalheProduto(RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated, PermissaoProdutos]
     serializer_class = ProdutoSerializer
 
     @override

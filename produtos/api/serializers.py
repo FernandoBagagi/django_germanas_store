@@ -9,7 +9,7 @@ class ProdutoSerializer(serializers.ModelSerializer):
     class Meta:  # type: ignore[reportIncompatibleVariableOverride]
         model = Produto
         fields = ['id', 'nome_comercial', 'descricao', 'url_imagem', 'preco']
-        read_only_fields = fields
+        read_only_fields = ['id']
 
 
 class FiltrosProdutoSerializer(serializers.Serializer):

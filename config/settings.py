@@ -10,7 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
+import os
+from datetime import timedelta
 from pathlib import Path
+from typing import Any
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,6 +35,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
+    'usuarios.apps.UsuariosConfig',
     'produtos.apps.ProdutosConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -47,6 +52,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'usuarios.middleware.VerificarSessao',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -77,9 +83,32 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': os.environ.get('GERMANAS_BANCO', str(BASE_DIR / 'db.sqlite3')),
+        'OPTIONS': {'transaction_mode': 'IMMEDIATE', 'timeout': 20},
     }
 }
+
+AUTH_USER_MODEL = 'usuarios.Usuario'
+if os.environ.get('GERMANAS_PREPARAR_USUARIOS') == '1':
+    AUTH_USER_MODEL = 'auth.User'
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': ['usuarios.api.autenticacao.AutenticacaoJWT'],
+    'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated'],
+    'EXCEPTION_HANDLER': 'usuarios.api.excecoes.tratar_excecao',
+    'DATE_INPUT_FORMATS': ['%Y-%m-%d'],
+    'DATE_FORMAT': '%Y-%m-%d',
+}
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'REFRESH_TOKEN_LIFETIME': timedelta(hours=24),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'CHECK_REVOKE_TOKEN': False,
+}
+PASSWORD_RESET_TIMEOUT = 3600
+LOGIN_URL = 'usuarios:entrar'
+LOGIN_REDIRECT_URL = 'usuarios:minha_conta'
+LOGOUT_REDIRECT_URL = '/'
 
 
 # Password validation
@@ -124,8 +153,20 @@ STATIC_URL = 'static/'
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
-MAILERS = {
+MAILERS: dict[str, dict[str, Any]] = {
     'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
+        'BACKEND': os.environ.get(
+            'GERMANAS_EMAIL_BACKEND',
+            'django.core.mail.backends.console.EmailBackend',
+        ),
     },
 }
+if os.environ.get('GERMANAS_EMAIL_HOST'):
+    MAILERS['default']['OPTIONS'] = {
+        'host': os.environ['GERMANAS_EMAIL_HOST'],
+        'port': int(os.environ.get('GERMANAS_EMAIL_PORT', '587')),
+        'username': os.environ.get('GERMANAS_EMAIL_USUARIO', ''),
+        'password': os.environ.get('GERMANAS_EMAIL_SENHA', ''),
+        'use_tls': os.environ.get('GERMANAS_EMAIL_TLS', '1') == '1',
+    }
+DEFAULT_FROM_EMAIL = os.environ.get('GERMANAS_EMAIL_REMETENTE', 'loja@localhost')

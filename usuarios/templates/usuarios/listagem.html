@@ -1,0 +1,20 @@
+{% extends 'produtos/base.html' %}
+{% block conteudo %}
+<h1>Usuários</h1>
+<a href="{% url 'usuarios:novo' %}">Cadastrar usuário</a>
+{% for conta in pagina %}
+<article>
+    <h2>{{ conta.username }}</h2>
+    <p>{{ conta.email }} · {{ conta.papel }} · {{ conta.is_active|yesno:'Ativo,Inativo' }}</p>
+    <a href="{% url 'usuarios:editar' conta.id %}">Consultar / editar</a>
+    <a href="{% url 'usuarios:alterar_papel' conta.id %}">Alterar papel</a>
+    {% if conta.is_active %}
+    <a href="{% url 'usuarios:desativar' conta.id %}">Desativar</a>
+    {% else %}
+    <a href="{% url 'usuarios:reativar' conta.id %}">Reativar</a>
+    {% endif %}
+</article>
+{% empty %}<p>Nenhum usuário.</p>{% endfor %}
+{% if pagina.has_previous %}<a href="?page={{ pagina.previous_page_number }}">Anterior</a>{% endif %}
+{% if pagina.has_next %}<a href="?page={{ pagina.next_page_number }}">Próxima</a>{% endif %}
+{% endblock %}

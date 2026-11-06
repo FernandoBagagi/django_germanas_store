@@ -33,7 +33,7 @@ docstring-code-format = true
 
 [tool.pytest.ini_options]
 pythonpath = "."
-testpaths = ["produtos/tests"]
+testpaths = ["produtos/tests", "usuarios/tests"]
 DJANGO_SETTINGS_MODULE = "config.settings"
 
 [tool.pyright]

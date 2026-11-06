@@ -1,0 +1,11 @@
+{% extends 'produtos/base.html' %}
+{% block conteudo %}
+<h1>Entrar</h1>
+<form method="post" class="formulario-usuario">
+    {% csrf_token %}{{ form.as_p }}
+    <input type="hidden" name="next" value="{{ next }}">
+    <button type="submit">Entrar</button>
+</form>
+<p><a href="{% url 'usuarios:redefinir_senha' %}">Esqueci minha senha</a></p>
+<p><a href="{% url 'usuarios:cadastrar' %}">Cadastrar</a></p>
+{% endblock %}

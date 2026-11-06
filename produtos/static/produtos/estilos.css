@@ -27,10 +27,25 @@ header {
 
 nav {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: 2rem;
     padding: 1.2rem 0;
+}
+
+.formulario-usuario {
+    max-width: 36rem;
+}
+
+.errorlist {
+    color: #a32929;
+}
+
+select {
+    max-width: 100%;
+    padding: .8rem;
+    font: inherit;
 }
 
 .marca {
