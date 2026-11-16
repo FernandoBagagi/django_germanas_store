@@ -103,6 +103,10 @@ django_germanas_store/
 - Cadastro exige username, email, password, first_name, last_name, nascimento,
   CPF e telefone. CPF válido e imutável; email exclusivo sem distinguir caixa;
   telefone brasileiro normalizado com DDD; nascimento ISO e idade mínima de 18.
+- Nascimento exige formato literal `AAAA-MM-DD`, com zeros em mês/dia, na API,
+  Web e Django Admin. Mensagens humanas de JWT são em pt-BR; códigos técnicos
+  permanecem nativos. Enviar `id`, `last_login` ou `date_joined` no cadastro ou
+  edição é tentativa de editar controles internos e retorna 403 na API.
 - ADMIN implica is_superuser e is_staff; VENDEDOR e CLIENTE usam grupos Django.
   Somente ADMIN administra outros usuários e altera papéis. Último ADMIN ativo
   não pode ser desativado ou rebaixado, inclusive sob concorrência.

@@ -1,12 +1,27 @@
+from typing import Any, cast
+
 from django.db import transaction
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.exceptions import InvalidToken
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from usuarios.models import Usuario
 
 
 class AutenticacaoJWT(JWTAuthentication):
+    def get_validated_token(self, raw_token):
+        try:
+            return super().get_validated_token(raw_token)
+        except InvalidToken as erro:
+            detalhes = dict(cast(dict[str, Any], erro.detail))
+            detalhes['detail'] = 'Token inválido ou expirado.'
+            detalhes['messages'] = [
+                {**mensagem, 'message': 'Token inválido ou expirado.'}
+                for mensagem in detalhes.get('messages', [])
+            ]
+            raise InvalidToken(detalhes) from erro
+
     def get_user(self, validated_token):
         usuario = super().get_user(validated_token)
         if validated_token.get('versao_autenticacao') != usuario.versao_autenticacao:

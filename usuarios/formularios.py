@@ -4,6 +4,21 @@ from django.core.exceptions import ValidationError
 
 from usuarios.servicos import CAMPOS, ServicoUsuarios
 from usuarios.tokens import gerador_recuperacao
+from usuarios.validadores import validar_formato_data_iso
+
+
+class CampoDataISO(forms.DateField):
+    def __init__(self, **kwargs):
+        kwargs.setdefault('input_formats', ['%Y-%m-%d'])
+        kwargs.setdefault(
+            'widget', forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'})
+        )
+        super().__init__(**kwargs)
+
+    def to_python(self, value):
+        if isinstance(value, str) and value:
+            validar_formato_data_iso(value)
+        return super().to_python(value)
 
 
 class FormularioUsuario(forms.Form):
@@ -11,11 +26,7 @@ class FormularioUsuario(forms.Form):
     email = forms.EmailField(label='Email')
     first_name = forms.CharField(label='Primeiro nome', max_length=150)
     last_name = forms.CharField(label='Sobrenome', max_length=150)
-    data_nascimento = forms.DateField(
-        label='Data de nascimento',
-        input_formats=['%Y-%m-%d'],
-        widget=forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
-    )
+    data_nascimento = CampoDataISO(label='Data de nascimento')
     cpf = forms.CharField(label='CPF')
     telefone = forms.CharField(label='Telefone com DDD')
     password = forms.CharField(label='Senha', strip=False, widget=forms.PasswordInput)

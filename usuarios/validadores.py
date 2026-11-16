@@ -5,6 +5,12 @@ from zoneinfo import ZoneInfo
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 
+
+def validar_formato_data_iso(valor: str) -> None:
+    if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', valor):
+        raise ValidationError('Informe uma data no formato AAAA-MM-DD.')
+
+
 DDDS = {
     11,
     12,

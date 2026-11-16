@@ -22,6 +22,9 @@ CAMPOS = (
     'telefone',
 )
 PRIVILEGIADOS = {
+    'id',
+    'last_login',
+    'date_joined',
     'is_staff',
     'is_superuser',
     'is_active',

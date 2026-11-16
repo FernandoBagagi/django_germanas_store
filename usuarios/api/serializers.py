@@ -1,7 +1,20 @@
+from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
 from usuarios.models import Usuario
 from usuarios.servicos import CAMPOS, ServicoUsuarios
+from usuarios.validadores import validar_formato_data_iso
+
+
+class DataISOSerializer(serializers.DateField):
+    def to_internal_value(self, value):
+        if not isinstance(value, str):
+            raise serializers.ValidationError('Informe uma data no formato AAAA-MM-DD.')
+        try:
+            validar_formato_data_iso(value)
+        except ValidationError as erro:
+            raise serializers.ValidationError(erro.messages) from erro
+        return super().to_internal_value(value)
 
 
 class UsuarioSerializer(serializers.ModelSerializer):
@@ -18,7 +31,7 @@ class CadastroSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=254)
     first_name = serializers.CharField(max_length=150)
     last_name = serializers.CharField(max_length=150)
-    data_nascimento = serializers.DateField(input_formats=['%Y-%m-%d'])
+    data_nascimento = DataISOSerializer(input_formats=['%Y-%m-%d'])
     cpf = serializers.CharField()
     telefone = serializers.CharField()
     password = serializers.CharField(write_only=True, trim_whitespace=False)

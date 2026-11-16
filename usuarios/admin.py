@@ -5,11 +5,13 @@ from django.contrib import admin
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect
 
+from usuarios.formularios import CampoDataISO
 from usuarios.models import Usuario
 from usuarios.servicos import CAMPOS, PRIVILEGIADOS, ServicoUsuarios
 
 
 class FormularioAdmin(forms.ModelForm):
+    data_nascimento = CampoDataISO(label='Data de nascimento')
     cpf = forms.CharField(label='CPF')
     telefone = forms.CharField(label='Telefone com DDD')
     password = forms.CharField(
