@@ -1,4 +1,4 @@
-# Relatório de QA 001 — Usuários
+# Relatório de QA 001_01 — Usuários
 
 > Rodada de 07/11/2026. Arquivado em `qa/relatorios/` em 16/11/2026.
 > Conteúdo histórico preservado; esta organização não representa um reteste.

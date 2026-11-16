@@ -18,12 +18,7 @@ django_germanas_store/
 ├── config/              # Módulo de configuração central (settings, urls raiz, wsgi/asgi)
 ├── conftest.py          # Fixtures compartilhadas de usuários e configuração de testes
 ├── docs/               # Plano aprovado (imutável sem autorização) e operação
-├── qa/                 # Roteiros HTTP e relatórios incrementais de QA funcional
-│   ├── roteiros/       # API, Web e recuperação; credenciais externas
-│   ├── relatorios/     # relatorio_001.md, relatorio_002.md, ...; preservar histórico
-│   ├── tests/          # Verificações offline da infraestrutura de QA
-│   ├── novo_relatorio.py # Cria o próximo rascunho com rastreabilidade dos roteiros
-│   └── README.md       # Origem dos roteiros, execução e acompanhamento de falhas
+├── qa/                 # QA funcional; estrutura e regras em qa/AGENTS.md
 ├── usuarios/           # Cadastro, autenticação, papéis e ciclo de vida das contas
 │   ├── api/            # JWT, serializers, permissões, views e URLs
 │   ├── migrations/     # Adoção conservadora de auth_user
@@ -162,18 +157,8 @@ django_germanas_store/
 
 ### Rastreabilidade de QA
 
-- Guardar roteiros de testes funcionais HTTP em `qa/roteiros/` e relatórios em
-  `qa/relatorios/relatorio_NNN.md`. Consultar `qa/README.md` antes de executar.
-- Criar o próximo rascunho com `.venv/bin/python qa/novo_relatorio.py`.
-  Não sobrescrever relatórios finalizados; manter IDs de falhas entre rodadas.
-- Registrar requisito, reprodução, esperado, encontrado, evidências e limitações.
-  Marcar uma falha como corrigida somente após reteste com evidência.
-- Roteiros reconstruídos não são evidências de uma nova execução. Registrar sua
-  procedência e a versão dos arquivos usados em cada rodada.
-- Senhas, tokens, cookies e estado privado ficam fora do repositório; os roteiros
-  usam variáveis de ambiente e `QA_EXECUCAO` em uma pasta temporária externa.
-- A execução funcional altera somente fixtures de QA, com limpeza pela aplicação.
-  Não executar uma nova rodada apenas para organizar documentação ou arquivos.
+Consultar [qa/AGENTS.md](qa/AGENTS.md) antes de trabalhar com testes funcionais
+ou relatórios de QA. As regras e a estrutura específicas estão nesse arquivo.
 
 1. **Desenvolvimento Incremental:** Implemente funcionalidades em blocos pequenos e testáveis (ex: Modelo de Produto -> Serializer de Produto -> ViewSet/Rotas de Produto).
 2. **Atenção às Migrações:** Ao criar ou atualizar modelos do Django, notifique o usuário ou execute `python manage.py makemigrations`.

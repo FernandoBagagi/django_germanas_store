@@ -1,4 +1,4 @@
-"""Suporte HTTP reconstruído dos roteiros de 07/11/2026; ver qa/README.md."""
+"""Suporte HTTP reconstruído dos roteiros de 07/11/2026; ver qa/AGENTS.md."""
 
 import http.cookiejar
 import json
@@ -113,17 +113,13 @@ class Roteiro:
             except KeyError, TypeError, IndexError, ValueError:
                 passou = False
         self.falhas += not passou
-        registro = {
-            'caso': nome,
-            'passou': passou,
-            'esperado': status,
-            'recebido': resposta['status'],
-            'linha_especificacao': linha,
-            'evidencia': evidencia,
-        }
-        with (self.pasta / 'verificacoes.jsonl').open('a', encoding='utf-8') as arq:
-            arq.write(json.dumps(registro, ensure_ascii=False) + '\n')
-        print(f'{"PASSOU" if passou else "FALHOU"} {nome}: {resposta["status"]}')
+        print(
+            f'{"PASSOU" if passou else "FALHOU"} {nome}: '
+            f'esperado={status}, recebido={resposta["status"]}; '
+            f'especificação linha {linha}'
+        )
+        if evidencia:
+            print(evidencia)
         return resposta
 
     def credenciais(self, papel: str) -> tuple[str, str]:
