@@ -17,23 +17,8 @@ django_germanas_store/
 ├── backups/             # Backups SQLite locais; leitura exige autorização
 ├── config/              # Módulo de configuração central (settings, urls raiz, wsgi/asgi)
 ├── conftest.py          # Fixtures compartilhadas de usuários e configuração de testes
-├── docs/               # Plano aprovado (imutável sem autorização) e operação
 ├── qa/                 # QA funcional; estrutura e regras em qa/AGENTS.md
-├── usuarios/           # Cadastro, autenticação, papéis e ciclo de vida das contas
-│   ├── api/            # JWT, serializers, permissões, views e URLs
-│   ├── migrations/     # Adoção conservadora de auth_user
-│   ├── templates/usuarios/ # Cadastro, conta, administração e recuperação
-│   ├── tests/          # Modelos, serviços, API, Web, migração e concorrência
-│   ├── admin.py        # Administração sem exclusão física nem exposição de hashes
-│   ├── formularios.py  # Formulários e envio de recuperação
-│   ├── middleware.py   # Versão de sessão e regularização do legado
-│   ├── migracoes.py    # Operação de adoção das tabelas existentes
-│   ├── models.py       # Usuario(AbstractUser) e vínculos nativos
-│   ├── servicos.py     # Regras compartilhadas e transações
-│   ├── tokens.py       # Recuperação vinculada à versão de autenticação
-│   ├── validadores.py  # CPF, telefone e maioridade
-│   ├── views.py
-│   └── urls.py
+├── usuarios/           # Estrutura e regras em usuarios/AGENTS.md
 ├── produtos/            # Catálogo de produtos: consulta Web e API
 │   ├── api/             # Serializers, views de leitura, paginação e URLs da API
 │   ├── migrations/      # Migrações do modelo Produto
@@ -91,37 +76,9 @@ django_germanas_store/
   `DJANGO_SETTINGS_MODULE=config.settings` e Faker na localidade `pt_BR`.
 
 ### Usuários
-- Fonte dos requisitos: `docs/PLAN_USUARIOS.md`. Nunca modificar esse plano sem
-  autorização explícita. Divergências devem ser apresentadas ao usuário.
-- `Usuario(AbstractUser)` preserva nomes e interfaces nativos em inglês;
-  extensões próprias usam pt-BR. `AUTH_USER_MODEL=usuarios.Usuario`.
-- Cadastro exige username, email, password, first_name, last_name, nascimento,
-  CPF e telefone. CPF válido e imutável; email exclusivo sem distinguir caixa;
-  telefone brasileiro normalizado com DDD; nascimento ISO e idade mínima de 18.
-- Nascimento exige formato literal `AAAA-MM-DD`, com zeros em mês/dia, na API,
-  Web e Django Admin. Mensagens humanas de JWT são em pt-BR; códigos técnicos
-  permanecem nativos. Enviar `id`, `last_login` ou `date_joined` no cadastro ou
-  edição é tentativa de editar controles internos e retorna 403 na API.
-- ADMIN implica is_superuser e is_staff; VENDEDOR e CLIENTE usam grupos Django.
-  Somente ADMIN administra outros usuários e altera papéis. Último ADMIN ativo
-  não pode ser desativado ou rebaixado, inclusive sob concorrência.
-- Cadastro público sempre cria CLIENTE. Mesmo CPF inativo reativa o registro,
-  mantém id, substitui cadastro/senha e remove privilégios. Esta regra foi
-  expressamente aprovada sem comprovação de titularidade.
-- Exclusão de usuário é desativação, reservando identificadores. Serviços
-  centralizam as operações; não usar QuerySet.update/delete para contorná-los.
-- API usa Bearer JWT com consulta ao usuário, access de 30 minutos, refresh de
-  24 horas, rotação e blacklist. Versão de autenticação invalida sessões e
-  tokens em troca de senha, papel, ativação ou desativação. Nunca expor hashes.
-- Recuperação envia link Django válido por uma hora; não envia senha.
-  Logout Web é POST com CSRF e encerra apenas a sessão atual. GET não efetiva
-  alterações de negócio. Falhas de autenticação: 401; permissão: 403.
-- Legado incompleto autentica para regularizar a própria conta, mas não acessa
-  operações protegidas de produtos, outros usuários ou Django Admin.
-- Migração real exige backup e autorização para acesso ao banco ignorado.
-  Consultar `docs/OPERACAO_USUARIOS.md`; não apagar o banco nem usar --fake.
-- Testes isolados: `GERMANAS_BANCO=:memory: .venv/bin/pytest`.
-  A suíte inclui bancos sintéticos temporários para migração e concorrência.
+
+Consultar [usuarios/AGENTS.md](usuarios/AGENTS.md): fonte de verdade do app,
+com estrutura, comportamento, regras de negócio e decisões técnicas.
 
 ### Idioma e Nomenclatura do Código (pt-BR)
 - **Convenção de Idioma:** Nomes de apps, modelos, tabelas, funções, métodos, variáveis, endpoints de API, arquivos e pastas devem ser escritos em **Português do Brasil (pt-BR)** (ex: `produtos`, `pedidos`, `calcular_total_pedido`).
